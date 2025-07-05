@@ -6,30 +6,23 @@ using MenuService.Domain.Entities;
 namespace MenuService.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
-public class MenuController : ControllerBase
+[Route("/[controller]/[action]")]
+public class MenuServiceController(MenuServiceHandler handler) : ControllerBase
 {
-    private readonly MenuServiceHandler _handler;
-
-    public MenuController(MenuServiceHandler handler)
-    {
-        _handler = handler;
-    }
-
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateMenuItemCommand command)
     {
-        await _handler.Handle(command);
-        return Ok();
+        await handler.Handle(command);
+        return Ok(new { message = "Item criado com sucesso", item = command });
     }
 
     [HttpGet]
-    public async Task<IEnumerable<MenuItem>> GetAll() => await _handler.GetAllAsync();
+    public async Task<IEnumerable<MenuItem>> GetAll() => await handler.GetAllAsync();
 
     [HttpGet("{id}")]
     public async Task<ActionResult<MenuItem>> GetById(string id)
     {
-        var item = await _handler.GetByIdAsync(id);
+        var item = await handler.GetByIdAsync(id);
         if (item is null) return NotFound();
         return item;
     }
@@ -37,14 +30,14 @@ public class MenuController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] CreateMenuItemCommand command)
     {
-        await _handler.UpdateAsync(id, command);
+        await handler.UpdateAsync(id, command);
         return NoContent();
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
-        await _handler.DeleteAsync(id);
+        await handler.DeleteAsync(id);
         return NoContent();
     }
 }

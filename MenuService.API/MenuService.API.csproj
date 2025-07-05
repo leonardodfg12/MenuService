@@ -13,10 +13,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Configurations\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\MenuService.Application\MenuService.Application.csproj" />
       <ProjectReference Include="..\MenuService.Infrastructure\MenuService.Infrastructure.csproj" />
     </ItemGroup>

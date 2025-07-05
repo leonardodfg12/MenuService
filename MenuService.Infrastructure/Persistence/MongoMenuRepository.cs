@@ -4,14 +4,9 @@ using MongoDB.Driver;
 
 namespace MenuService.Infrastructure.Persistence;
 
-public class MongoMenuRepository : IMenuRepository
+public class MongoMenuRepository(IMongoDatabase database) : IMenuRepository
 {
-    private readonly IMongoCollection<MenuItem> _collection;
-
-    public MongoMenuRepository(IMongoDatabase database)
-    {
-        _collection = database.GetCollection<MenuItem>("MenuItems");
-    }
+    private readonly IMongoCollection<MenuItem> _collection = database.GetCollection<MenuItem>("MenuItems");
 
     public async Task<IEnumerable<MenuItem>> GetAllAsync() =>
         await _collection.Find(_ => true).ToListAsync();

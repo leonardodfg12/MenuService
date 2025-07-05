@@ -4,36 +4,29 @@ using MenuService.Domain.Interfaces;
 
 namespace MenuService.Application.Handlers;
 
-public class MenuServiceHandler
+public class MenuServiceHandler(IMenuRepository repository)
 {
-    private readonly IMenuRepository _repository;
-
-    public MenuServiceHandler(IMenuRepository repository)
-    {
-        _repository = repository;
-    }
-
     public async Task Handle(CreateMenuItemCommand command)
     {
         var item = new MenuItem(command.Name, command.Description, command.Price, command.IsAvailable);
-        await _repository.AddAsync(item);
+        await repository.AddAsync(item);
     }
 
     public async Task<IEnumerable<MenuItem>> GetAllAsync() =>
-        await _repository.GetAllAsync();
+        await repository.GetAllAsync();
 
     public async Task<MenuItem?> GetByIdAsync(string id) =>
-        await _repository.GetByIdAsync(id);
+        await repository.GetByIdAsync(id);
 
     public async Task UpdateAsync(string id, CreateMenuItemCommand command)
     {
-        var item = await _repository.GetByIdAsync(id);
+        var item = await repository.GetByIdAsync(id);
         if (item is null) return;
 
         item.Update(command.Name, command.Description, command.Price, command.IsAvailable);
-        await _repository.UpdateAsync(item);
+        await repository.UpdateAsync(item);
     }
 
     public async Task DeleteAsync(string id) =>
-        await _repository.DeleteAsync(id);
+        await repository.DeleteAsync(id);
 }
