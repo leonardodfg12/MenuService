@@ -12,15 +12,15 @@ builder.Services.Configure<MongoDbSettings>(
 
 builder.Services.AddSingleton<IMongoClient>(sp =>
 {
-    var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
-    return new MongoClient(settings.ConnectionString);
+    var connectionString = builder.Configuration["MONGO_CONNECTION_STRING"];
+    return new MongoClient(connectionString);
 });
 
 builder.Services.AddScoped(sp =>
 {
-    var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
+    var databaseName = builder.Configuration["MONGO_DATABASE_NAME"];
     var client = sp.GetRequiredService<IMongoClient>();
-    return client.GetDatabase(settings.DatabaseName);
+    return client.GetDatabase(databaseName);
 });
 
 builder.Services.AddScoped<IMenuRepository, MongoMenuRepository>();
