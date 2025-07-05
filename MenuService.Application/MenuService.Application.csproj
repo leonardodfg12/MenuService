@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\MenuService.Domain\MenuService.Domain.csproj" />
+    </ItemGroup>
+
 </Project>

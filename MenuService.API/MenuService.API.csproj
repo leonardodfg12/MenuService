@@ -8,7 +8,17 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.17"/>
+        <PackageReference Include="MongoDB.Driver" Version="3.4.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Configurations\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\MenuService.Application\MenuService.Application.csproj" />
+      <ProjectReference Include="..\MenuService.Infrastructure\MenuService.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>
