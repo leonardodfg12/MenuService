@@ -2,7 +2,6 @@ using MenuService.Application.Handlers;
 using MenuService.Domain.Interfaces;
 using MenuService.Infrastructure.Configurations;
 using MenuService.Infrastructure.Persistence;
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);

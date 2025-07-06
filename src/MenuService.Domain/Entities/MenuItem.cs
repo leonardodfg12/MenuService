@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace MenuService.Domain.Entities;
 
+[ExcludeFromCodeCoverage]
 public class MenuItem(string name, string description, decimal price, bool isAvailable)
 {
     public string Id { get; private set; } = Guid.NewGuid().ToString();
