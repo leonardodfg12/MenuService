@@ -9,6 +9,7 @@
     <ItemGroup>
         <PackageReference Include="coverlet.collector" Version="6.0.0"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
+        <PackageReference Include="MongoDB.Driver" Version="3.4.0" />
         <PackageReference Include="Moq" Version="4.20.72" />
         <PackageReference Include="xunit" Version="2.5.3"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3"/>
@@ -16,6 +17,17 @@
 
     <ItemGroup>
         <Using Include="Xunit"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\MenuService.Domain\MenuService.Domain.csproj" />
+      <ProjectReference Include="..\..\src\MenuService.Infrastructure\MenuService.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="FluentAssertions">
+        <HintPath>..\..\..\..\..\..\.nuget\packages\fluentassertions\8.5.0\lib\net6.0\FluentAssertions.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

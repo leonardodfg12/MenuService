@@ -17,5 +17,9 @@
     <ItemGroup>
         <Using Include="Xunit"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\MenuService.Application\MenuService.Application.csproj" />
+    </ItemGroup>
     
 </Project>
