@@ -8,6 +8,8 @@ namespace MenuService.Application.Handlers;
 
 public class MenuServiceHandler(IMenuRepository repository, ISendEndpointProvider sendEndpointProvider)
 {
+    private const string MenuItemCreatedEvent = "menu-item-created";
+    
     public async Task Handle(CreateMenuItemCommand command)
     {
         var item = new MenuItem(command.Name, command.Description, command.Price, command.IsAvailable);
@@ -22,7 +24,7 @@ public class MenuServiceHandler(IMenuRepository repository, ISendEndpointProvide
             IsAvailable = command.IsAvailable
         };
 
-        var endpoint = await sendEndpointProvider.GetSendEndpoint(new Uri("queue:menu-service-queue"));
+        var endpoint = await sendEndpointProvider.GetSendEndpoint(new Uri($"queue:{MenuItemCreatedEvent}"));
         await endpoint.Send(menuItemCreatedEvent);
     }
 
