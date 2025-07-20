@@ -1,3 +1,4 @@
+using MassTransit;
 using MenuService.Application.Handlers;
 using MenuService.Domain.Interfaces;
 using MenuService.Infrastructure.Configurations;
@@ -8,6 +9,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<MongoDbSettings>(
     builder.Configuration.GetSection("MongoDbSettings"));
+
+builder.Services.AddMassTransit( 
+    cfg =>
+    {
+        cfg.UsingRabbitMq((context, config) =>
+        {
+            config.Host(builder.Configuration["RABBITMQ_HOST"], h =>
+            {
+                h.Username(builder.Configuration["RABBITMQ_USERNAME"]!);
+                h.Password(builder.Configuration["RABBITMQ_PASSWORD"]!);
+            });
+        });
+    });
 
 builder.Services.AddSingleton<IMongoClient>(sp =>
 {

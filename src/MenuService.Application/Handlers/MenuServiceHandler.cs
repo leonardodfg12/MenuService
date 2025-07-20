@@ -1,15 +1,29 @@
+using MassTransit;
 using MenuService.Application.Commands;
+using MenuService.Application.Contracts;
 using MenuService.Domain.Entities;
 using MenuService.Domain.Interfaces;
 
 namespace MenuService.Application.Handlers;
 
-public class MenuServiceHandler(IMenuRepository repository)
+public class MenuServiceHandler(IMenuRepository repository, ISendEndpointProvider sendEndpointProvider)
 {
     public async Task Handle(CreateMenuItemCommand command)
     {
         var item = new MenuItem(command.Name, command.Description, command.Price, command.IsAvailable);
         await repository.AddAsync(item);
+        
+        var menuItemCreatedEvent = new MenuItemCreatedEvent
+        {
+            Id = item.Id,
+            Name = command.Name,
+            Description = command.Description,
+            Price = command.Price,
+            IsAvailable = command.IsAvailable
+        };
+
+        var endpoint = await sendEndpointProvider.GetSendEndpoint(new Uri("queue:menu-service-queue"));
+        await endpoint.Send(menuItemCreatedEvent);
     }
 
     public async Task<IEnumerable<MenuItem>> GetAllAsync() =>

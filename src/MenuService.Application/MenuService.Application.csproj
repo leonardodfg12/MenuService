@@ -10,4 +10,8 @@
       <ProjectReference Include="..\MenuService.Domain\MenuService.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="MassTransit.Abstractions" Version="8.5.1" />
+    </ItemGroup>
+
 </Project>
