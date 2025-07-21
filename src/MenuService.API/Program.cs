@@ -1,9 +1,12 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using MassTransit;
 using MenuService.Application.Handlers;
 using MenuService.Domain.Interfaces;
 using MenuService.Infrastructure.Configurations;
 using MenuService.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 
 namespace MenuService.API;
@@ -14,6 +17,51 @@ public abstract class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        var jwtKey = builder.Configuration["JWT_KEY"];
+        var jwtIssuer = builder.Configuration["JWT_ISSUER"];
+        var jwtAudience = builder.Configuration["JWT_AUDIENCE"];
+        var keyBytes = Encoding.UTF8.GetBytes(jwtKey!);
+        builder.Services.AddSwaggerGen(options =>
+        {
+            // Swagger JWT auth support
+            options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                Description = "Informe o token JWT no campo abaixo: Bearer {token}",
+                Name = "Authorization",
+                Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey
+            });
+            options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+            {
+                {
+                    new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                    {
+                        Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                        {
+                            Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+        });
+
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtIssuer,
+                    ValidAudience = jwtAudience,
+                    IssuerSigningKey = new SymmetricSecurityKey(keyBytes)
+                };
+            });
+        builder.Services.AddAuthorization();
 
         builder.Services.Configure<MongoDbSettings>(
             builder.Configuration.GetSection("MongoDbSettings"));
@@ -55,6 +103,7 @@ public abstract class Program
 
         app.UseSwagger();
         app.UseSwaggerUI();
+        app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
         app.Run();
