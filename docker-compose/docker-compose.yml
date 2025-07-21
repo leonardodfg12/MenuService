@@ -47,3 +47,18 @@ services:
     depends_on:
       - mongo
       - rabbitmq
+
+  kitchenservice:
+    image: leonardodfg12/kitchenservice:latest
+    container_name: kitchenservice
+    environment:
+      "MONGO_CONNECTION_STRING": "mongodb://mongo:27017"
+      "MONGO_DATABASE_NAME": "FastTechFoods"
+      "RABBITMQ_HOST": "rabbitmq"
+      "RABBITMQ_PASSWORD": "guest"
+      "RABBITMQ_USERNAME": "guest"
+    ports:
+      - "8082:8080"
+    depends_on:
+      - mongo
+      - rabbitmq
